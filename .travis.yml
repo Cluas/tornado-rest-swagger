@@ -1,0 +1,20 @@
+language: python
+python:
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
+- 3.7-dev
+install:
+- pip install -r requirements-dev.txt
+script:
+- python -m pytest .
+deploy:
+  distributions: sdist bdist_wheel
+  skip_existing: true
+  provider: pypi
+  user: Cluas
+  password:
+    secure: gysWKWdynqksUPPS2FY7TAFhn1iMvc/fzfMsVrRyyWrOlB3PGarhUg/N4p0+ocAqEiqru/nxDK2flkhm+7k9N6987boJV9TaEb/W//G3TZZaYlvTPjrzMVwiApqxxcLKoEU727ErbfjIT22sbywSU/qxP18PblqIltMWooFrBrOPkoT0CZO+vQY7qyRD8B61Z2Y/hGi1e7sJvqoTTM0PuPEZTA9zQj9uNK+RxoqzJstDpe/XE6O08PUmzPNF/Tom0iv7jiamgEN7BK8fvrtAdUXWm1tsQrE70Asszkjf6nZPMzDbI6lR7UxUFm0BWT4RBtcrhsPKgg61l97wPxVYPOLJx2bCye56h1lSjNpIFlN/Zb/e/0Nc6tOLxcZYOp9f1+pk//Y/zWMRdBjNOLJxgb3hTBmX3JE3r0CeeWkBgrK9ySZtu6j1R0r3ve49axBWoEOt4nNz/ZhF30KgB0h7kbe+RzO3ZSRrgi84WacnZsnQL6c66Ofzej9NixQPHgJA4KkK9432PlmexM6B0z9/SSmXLjuLw7DoszWDjCzUHG/49DTAQksnCnkFZPC8rxNJnB+KQPQKyxUf7p0k1xHlzQHagzFvdmsHaNAfmN1vSpvL/eoPRKPr/5QkmaZy/JFakALtuAz5LwjjYW0YKYhHkm+/gybA7WVkYbJVmSsQvro=
+  on:
+    branch: master
