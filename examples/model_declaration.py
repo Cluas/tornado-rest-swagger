@@ -11,49 +11,50 @@ class PostsHandler(tornado.web.RequestHandler):
         """
         ---
         tags:
-        - Posts
+          - Posts
         summary: List posts
         description: List all posts in feed
         operationId: getPost
         responses:
-           '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PostModel'
-            '404':
-              description: Not Found
-              content: {}
+            '200':
+              description: A list of users
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ArrayOfPostModel'
+                application/xml:
+                  schema:
+                    $ref: '#/components/schemas/ArrayOfPostModel'
+                text/plain:
+                  schema:
+                    type: string
         """
 
     def post(self):
         """
         ---
         tags:
-        - Posts
+          - Posts
         summary: Add a new Post to the blog
         operationId: addPost
         requestBody:
-        description: Post object that needs to be added to the blog
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostModel'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/PostModel'
-        required: true
+          description: Post object that needs to be added to the blog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PostModel'
+          required: true
         responses:
-        '405':
-          description: Invalid input
-          content: {}
+          '405':
+            description: Invalid input
+            content: {}
         security:
-        - petstore_auth:
-            - 'write:pets'
-            - 'read:pets'
+          - petstore_auth:
+              - 'write:pets'
+              - 'read:pets'
         """
 
 
@@ -62,107 +63,116 @@ class PostsDetailsHandler(tornado.web.RequestHandler):
         """
         ---
         tags:
-        - Posts
+          - Posts
         summary: Find Post by ID
         description: Returns a single post
         operationId: getPostById
         parameters:
-        - name: post_id
-          in: path
-          description: ID of post to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+          - name: post_id
+            in: path
+            description: ID of post to return
+            required: true
+            schema:
+              type: integer
+              format: int64
         responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/PostModel'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostModel'
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
+          '200':
+            description: successful operation
+            content:
+              application/xml:
+                schema:
+                  $ref: '#/components/schemas/PostModel'
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/PostModel'
+          '400':
+            description: Invalid ID supplied
+            content: {}
+          '404':
+            description: Pet not found
+            content: {}
         security:
-        - api_key: []
+          - api_key: []
         """
 
     def patch(self, posts_id):
         """
         ---
         tags:
-        - Posts
-                summary: Find Post by ID
+          - Posts
+        summary: Find Post by ID
         description: Returns a single post
         operationId: getPostById
         parameters:
-        - name: post_id
-          in: path
-          description: ID of post to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+          - name: post_id
+            in: path
+            description: ID of post to return
+            required: true
+            schema:
+              type: integer
+              format: int64
         requestBody:
-        description: Post object that needs to be added to the blog
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostModel'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/PostModel'
-        required: true
+          description: Post object that needs to be added to the blog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostModel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PostModel'
+          required: true
         responses:
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
+          '400':
+            description: Invalid ID supplied
+            content: {}
+          '404':
+            description: Pet not found
+            content: {}
         security:
-        - api_key: []
+          - api_key: []
         """
 
     def delete(self, posts_id):
         """
         ---
         tags:
-        - Posts
-         summary: Delete Post by ID
+          - Posts
+        summary: Delete Post by ID
         description: Returns a single post
         operationId: getPostById
         parameters:
-        - name: post_id
-          in: path
-          description: ID of post to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+          - name: post_id
+            in: path
+            description: ID of post to return
+            required: true
+            schema:
+              type: integer
+              format: int64
         responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/PostModel'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostModel'
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  description: Post model representation
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    title:
+                      type: string
+                    text:
+                      type: string
+                    is_visible:
+                      type: boolean
+                      default: true
+          '400':
+            description: Invalid ID supplied
+            content: {}
+          '404':
+            description: Pet not found
+            content: {}
         """
 
 
@@ -183,6 +193,17 @@ class PostModel:
         is_visible:
             type: boolean
             default: true
+    """
+
+
+@register_swagger_model
+class ArrayOfPostModel:
+    """
+    ---
+    type: array
+    description: Array of Post model representation
+    items:
+        $ref: '#/components/schemas/PostModel'
     """
 
 
