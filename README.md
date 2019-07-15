@@ -60,8 +60,8 @@ class Application(tornado.web.Application):
                       api_base_url='/',
                       description='',
                       api_version='1.0.0',
-                      title='LuedongTech API',
-                      contact='huwl@luedongtech.com',
+                      title='example title',
+                      contact='username@example.com',
                       schemes=['https', 'http'],
                       security_definitions={
                           'ApiKeyAuth': {
