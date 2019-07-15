@@ -17,7 +17,7 @@ def export_swagger(
     title="Swagger API",
     contact="",
     schemes=None,
-    security_definitions=None,
+    security_schemes=None,
 ):
     return generate_doc_from_endpoints(
         routes,
@@ -27,7 +27,7 @@ def export_swagger(
         title=title,
         contact=contact,
         schemes=schemes,
-        security_definitions=security_definitions,
+        security_schemes=security_schemes,
     )
 
 
@@ -40,7 +40,8 @@ def setup_swagger(
     title="Swagger API",
     contact="",
     schemes=None,
-    security_definitions=None,
+    security_schemes=None,
+    globe_securities=None,
 ):
     swagger_schema = generate_doc_from_endpoints(
         routes,
@@ -50,7 +51,8 @@ def setup_swagger(
         title=title,
         contact=contact,
         schemes=schemes,
-        security_definitions=security_definitions,
+        security_schemes=security_schemes,
+        globe_securities=globe_securities,
     )
 
     _swagger_url = "/{}".format(swagger_url) if not swagger_url.startswith("/") else swagger_url

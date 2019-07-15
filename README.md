@@ -278,7 +278,7 @@ class Application(tornado.web.Application):
                       title='Journal API',
                       contact='name@domain',
                       schemes=['https'],
-                      security_definitions={
+                      security_schemes ={
                           'ApiKeyAuth': {
                               'type': 'apiKey',
                               'in': 'header',

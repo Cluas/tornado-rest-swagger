@@ -122,7 +122,7 @@ def nesteddict2yaml(d, indent=10, result=""):
 
 
 def generate_doc_from_endpoints(
-    routes, api_base_url, description, api_version, title, contact, schemes, security_definitions
+    routes, api_base_url, description, api_version, title, contact, schemes, security_schemes, globe_securities
 ):
     from tornado_swagger.model import swagger_models
 
@@ -145,14 +145,15 @@ def generate_doc_from_endpoints(
             title=title,
             contact=contact,
             base_path=api_base_url,
-            security_definitions=security_definitions,
         )
 
     # The Swagger OBJ
     swagger = yaml.safe_load(swagger_base)
     swagger["schemes"] = schemes
     swagger["paths"] = collections.defaultdict(dict)
-    swagger["components"] = dict(schemas=swagger_models)
+    swagger["security"] = globe_securities
+    swagger["components"]["schemas"] = swagger_models
+    swagger["components"]["securitySchemes"] = security_schemes
 
     for route in routes:
         if isinstance(route, tuple):

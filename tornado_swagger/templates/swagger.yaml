@@ -9,8 +9,8 @@ info:
     name: {{ contact }}
   {% endif %}
 basePath: {{ base_path }}
-{% if security_definitions %}
-securityDefinitions:
-{{ security_definitions|nesteddict2yaml }}
-{% endif %}
+components:
+  securitySchemes:
+  schemas:
 paths:
+security:
