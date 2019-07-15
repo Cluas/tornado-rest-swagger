@@ -49,16 +49,23 @@ tornado-rest-swagger is a plugin for tornado server that allow to document APIs 
 
 ![](https://github.com/Cluas/tornado-rest-swagger/blob/master/docs/wiki__swagger_single_endpoint.png)
 
+Example
+----------------------
 ```python
 import tornado.ioloop
 import tornado.options
 import tornado.web
 
-from tornado_swagger.model import register_swagger_model
+from tornado_swagger.components import components
 from tornado_swagger.setup import setup_swagger
 
 
-class PostsHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+    def data_received(self, chunk):
+        pass
+
+
+class PostsHandler(BaseHandler):
     def get(self):
         """
         ---
@@ -110,7 +117,7 @@ class PostsHandler(tornado.web.RequestHandler):
         """
 
 
-class PostsDetailsHandler(tornado.web.RequestHandler):
+class PostsDetailsHandler(BaseHandler):
     def get(self, posts_id):
         """
         ---
@@ -228,8 +235,8 @@ class PostsDetailsHandler(tornado.web.RequestHandler):
         """
 
 
-@register_swagger_model
-class PostModel:
+@components.schemas.register
+class PostModel(object):
     """
     ---
     type: object
@@ -248,8 +255,8 @@ class PostModel:
     """
 
 
-@register_swagger_model
-class ArrayOfPostModel:
+@components.schemas.register
+class ArrayOfPostModel(object):
     """
     ---
     type: array
@@ -259,37 +266,35 @@ class ArrayOfPostModel:
     """
 
 
+@components.security_schemes.register
+class JWTToken(object):
+    """
+    ---
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    """
+
+
 class Application(tornado.web.Application):
-    _routes = [
-        tornado.web.url(r'/api/posts', PostsHandler),
-        tornado.web.url(r'/api/posts/(\w+)', PostsDetailsHandler),
-    ]
+    _routes = [tornado.web.url(r"/api/posts", PostsHandler), tornado.web.url(r"/api/posts/(\w+)", PostsDetailsHandler)]
 
     def __init__(self):
-        settings = {
-            'debug': True
-        }
+        settings = {"debug": True}
 
-        setup_swagger(self._routes,
-                      swagger_url='/doc',
-                      api_base_url='/',
-                      description='',
-                      api_version='1.0.0',
-                      title='Journal API',
-                      contact='name@domain',
-                      schemes=['https'],
-                      security_schemes ={
-                          'ApiKeyAuth': {
-                              'type': 'apiKey',
-                              'in': 'header',
-                              'name': 'X-API-Key'
-                          }
-                      })
+        setup_swagger(
+            self._routes,
+            swagger_url="/doc",
+            description="",
+            api_version="1.0.0",
+            title="Journal API",
+            contact=dict(name="test", email="test@domain.com", url="https://www.cluas.me"),
+        )
         super(Application, self).__init__(self._routes, **settings)
 
 
-if __name__ == '__main__':
-    tornado.options.define('port', default='8080', help='Port to listen on')
+if __name__ == "__main__":
+    tornado.options.define("port", default="8080", help="Port to listen on")
     tornado.options.parse_command_line()
 
     app = Application()
@@ -297,7 +302,12 @@ if __name__ == '__main__':
 
     tornado.ioloop.IOLoop.current().start()
 
+
 ```
+
+### Version 1.1.3
+
+- Fully support OpenAPI3.0
 
 ### Version 1.1.2
 

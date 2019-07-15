@@ -14,7 +14,7 @@ if sys.version >= "3":
 else:
 
     class getfullargspec(object):
-        "A quick and dirty replacement for getfullargspec for Python 2.X"
+        """A quick and dirty replacement for getfullargspec for Python 2.X"""
 
         def __init__(self, f):
             self.args, self.varargs, self.varkw, self.defaults = inspect.getargspec(f)
@@ -60,7 +60,7 @@ def extract_swagger_docs(endpoint_doc):
     return end_point_swagger_doc
 
 
-def _build_doc_from_func_doc(handler):
+def build_doc_from_func_doc(handler):
     out = {}
 
     for method in handler.SUPPORTED_METHODS:
@@ -73,17 +73,17 @@ def _build_doc_from_func_doc(handler):
     return out
 
 
-def _try_extract_docs(method_handler):
+def try_extract_docs(method_handler):
     try:
         return getfullargspec(method_handler).args[1:]
     except TypeError:  # unsupported callable
         if hasattr(method_handler, "__wrapped__"):
-            return _try_extract_docs(method_handler.__wrapped__)
+            return try_extract_docs(method_handler.__wrapped__)
         else:
             return []
 
 
-def _extract_parameters_names(handler, parameters_count):
+def extract_parameters_names(handler, parameters_count):
     if parameters_count == 0:
         return []
 
@@ -91,7 +91,7 @@ def _extract_parameters_names(handler, parameters_count):
 
     for method in handler.SUPPORTED_METHODS:
         method_handler = getattr(handler, method.lower())
-        args = _try_extract_docs(method_handler)
+        args = try_extract_docs(method_handler)
 
         if len(args) > 0:
             for i, arg in enumerate(args):
@@ -101,9 +101,9 @@ def _extract_parameters_names(handler, parameters_count):
     return parameters
 
 
-def _format_handler_path(target, route_pattern, groups):
+def format_handler_path(target, route_pattern, groups):
     brackets_regex = re.compile(r"\(.*?\)")
-    parameters = _extract_parameters_names(target, groups)
+    parameters = extract_parameters_names(target, groups)
 
     for i, entity in enumerate(brackets_regex.findall(route_pattern)):
         route_pattern = route_pattern.replace(entity, "{%s}" % parameters[i], 1)
@@ -121,10 +121,8 @@ def nesteddict2yaml(d, indent=10, result=""):
     return result
 
 
-def generate_doc_from_endpoints(
-    routes, api_base_url, description, api_version, title, contact, schemes, security_schemes, globe_securities
-):
-    from tornado_swagger.model import swagger_models
+def generate_doc_from_endpoints(routes, servers, description, api_version, title, contact, external_docs, security):
+    from tornado_swagger.components import components
 
     # Clean description
     _start_desc = 0
@@ -144,16 +142,16 @@ def generate_doc_from_endpoints(
             version=api_version,
             title=title,
             contact=contact,
-            base_path=api_base_url,
+            servers=servers,
+            external_docs=external_docs,
         )
 
     # The Swagger OBJ
     swagger = yaml.safe_load(swagger_base)
-    swagger["schemes"] = schemes
     swagger["paths"] = collections.defaultdict(dict)
-    swagger["security"] = globe_securities
-    swagger["components"]["schemas"] = swagger_models
-    swagger["components"]["securitySchemes"] = security_schemes
+    swagger["security"] = security
+    swagger["components"] = components.to_dict()
+    swagger["servers"] = servers
 
     for route in routes:
         if isinstance(route, tuple):
@@ -162,8 +160,8 @@ def generate_doc_from_endpoints(
             target = route.target
         else:
             target = route.handler_class
-        swagger["paths"][_format_handler_path(target, route.regex.pattern, route.regex.groups)].update(
-            _build_doc_from_func_doc(target)
+        swagger["paths"][format_handler_path(target, route.regex.pattern, route.regex.groups)].update(
+            build_doc_from_func_doc(target)
         )
 
     return swagger

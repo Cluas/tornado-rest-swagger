@@ -2,6 +2,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
+from tornado_swagger.components import components
 from tornado_swagger.setup import setup_swagger
 
 
@@ -22,6 +23,7 @@ class ExampleHandler(BaseHandler):
         description: This can only be done by the logged in user.
         operationId: examples.api.api.createUser
         requestBody:
+
           description: Created user object
           required: false
           content:
@@ -55,6 +57,16 @@ class ExampleHandler(BaseHandler):
                 description: successful operation
         """
         self.write({})
+
+
+@components.security_schemes.register
+class JWTToken(object):
+    """
+    ---
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    """
 
 
 class Application(tornado.web.Application):

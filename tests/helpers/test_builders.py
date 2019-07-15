@@ -2,12 +2,12 @@ import sys
 
 import tornado.web
 
-from tornado_swagger._builders import _build_doc_from_func_doc
-from tornado_swagger._builders import _extract_parameters_names
-from tornado_swagger._builders import _format_handler_path
-from tornado_swagger._builders import extract_swagger_docs
-from tornado_swagger._builders import generate_doc_from_endpoints
-from tornado_swagger._builders import SWAGGER_DOC_SEPARATOR
+from tornado_swagger.builders import build_doc_from_func_doc
+from tornado_swagger.builders import extract_parameters_names
+from tornado_swagger.builders import format_handler_path
+from tornado_swagger.builders import extract_swagger_docs
+from tornado_swagger.builders import generate_doc_from_endpoints
+from tornado_swagger.builders import SWAGGER_DOC_SEPARATOR
 
 INVALID_ENDPOINT_DOC = SWAGGER_DOC_SEPARATOR + """
 tag"""
@@ -17,37 +17,35 @@ tags:
 summary: Create user
 description: This can only be done by the logged in user.
 operationId: examples.api.api.createUser
-produces:
-  - application/json
-parameters:
-  - in: body
-    name: body
+requestBody:
     description: Created user object
     required: false
-    schema:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        username:
-          type:
-            - "string"
-            - "null"
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        phone:
-          type: string
-        userStatus:
-          type: integer
-          format: int32
-          description: User Status
+    content:
+        application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            username:
+              type:
+                - "string"
+                - "null"
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+            phone:
+              type: string
+            userStatus:
+              type: integer
+              format: int32
+              description: User Status
 responses:
 "201":
   description: successful operation
@@ -74,7 +72,7 @@ def test_build_doc_from_func_doc():
         ExampleHandler.get.__doc__ = ENDPOINT_DOC
     else:
         ExampleHandler.get.__func__.__doc__ = ENDPOINT_DOC
-    docs = _build_doc_from_func_doc(ExampleHandler)
+    docs = build_doc_from_func_doc(ExampleHandler)
     assert 'Invalid Swagger' not in docs['get']['tags']
 
 
@@ -89,14 +87,13 @@ def test_generate_doc_from_each_end_point():
 
     docs = generate_doc_from_endpoints(
         routes,
-        api_base_url='/',
+        servers=None,
         description='',
         api_version='',
         title='',
-        contact='',
-        security_schemes=None,
-        schemes=[],
-        globe_securities=None,
+        contact=None,
+        external_docs=None,
+        security=None
     )
     assert docs
 
@@ -106,7 +103,7 @@ def test_extract_parameters_names_empty_parameter():
         def get(self):
             pass
 
-    parameters = _extract_parameters_names(HandlerWithEmptyParameter, 0)
+    parameters = extract_parameters_names(HandlerWithEmptyParameter, 0)
     assert parameters == []
 
 
@@ -115,7 +112,7 @@ def test_extract_parameters_names_signle_parameter():
         def get(self, posts_id):
             pass
 
-    parameters = _extract_parameters_names(HandlerWithSingleParameter, 1)
+    parameters = extract_parameters_names(HandlerWithSingleParameter, 1)
     assert parameters == ['posts_id']
 
 
@@ -124,7 +121,7 @@ def test_extract_parameters_names_multiple():
         def get(self, posts_id, post_id2, post_id3):
             pass
 
-    parameters = _extract_parameters_names(HandlerWithMultipleParameter, 3)
+    parameters = extract_parameters_names(HandlerWithMultipleParameter, 3)
     assert parameters == ['posts_id', 'post_id2', 'post_id3']
 
 
@@ -133,5 +130,5 @@ def test__format_handler_path():
         def get(self, posts_id, post_id2, post_id3):
             pass
     url = tornado.web.url(r'/api/(\w+)/(\w+)/(\w+)', HandlerWithMultipleParameter)
-    route_path = _format_handler_path(HandlerWithMultipleParameter, url.regex.pattern, url.regex.groups)
+    route_path = format_handler_path(HandlerWithMultipleParameter, url.regex.pattern, url.regex.groups)
     assert route_path == '/api/{posts_id}/{post_id2}/{post_id3}'

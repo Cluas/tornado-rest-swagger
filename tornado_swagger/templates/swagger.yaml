@@ -1,16 +1,33 @@
 openapi: "3.0.0"
 info:
+  {% if description %}
   description: |
     {{ description }}
+  {% endif %}
   version: "{{ version }}"
+  {% if team %}
+  termsOfService: {{ team }}
+  {% endif %}
+  {% if license %}
+  license:
+    name: {{ license.name }}
+    url: {{ license.url }}
+  {% endif %}
   title: {{ title }}
   {% if contact %}
   contact:
-    name: {{ contact }}
+    name: {{ contact.name }}
+    email: {{ contact.email }}
+    url: {{contact.url}}
   {% endif %}
-basePath: {{ base_path }}
+  {% if external_docs %}
+  externalDocs:
+    description: {{external_docs.description}}
+    url: {{external_docs.url}}
+  {% endif %}
 components:
   securitySchemes:
   schemas:
 paths:
 security:
+servers:
