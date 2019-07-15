@@ -18,6 +18,7 @@ def export_swagger(
     contact="",
     schemes=None,
     security_schemes=None,
+    globe_securities=None,
 ):
     return generate_doc_from_endpoints(
         routes,
@@ -28,6 +29,7 @@ def export_swagger(
         contact=contact,
         schemes=schemes,
         security_schemes=security_schemes,
+        globe_securities=globe_securities,
     )
 
 
