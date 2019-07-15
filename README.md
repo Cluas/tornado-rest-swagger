@@ -1,7 +1,6 @@
 tornado-rest-swagger
 ===============
 
-![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/Cluas/tornado-rest-swagger.svg)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCluas%2Ftornado-rest-swagger.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FCluas%2Ftornado-rest-swagger?ref=badge_shield)
 ![GitHub](https://img.shields.io/github/license/Cluas/tornado-rest-swagger.svg)
 
@@ -33,7 +32,7 @@ tornado-rest-swagger
 Documentation |  https://github.com/Cluas/tornado-rest-swagger/wiki
 ------------- | -------------------------------------------------
 Code | https://github.com/Cluas/tornado-rest-swagger
-Issues | https://github.com/Cluas/tornado-rest-swaggerr/issues
+Issues | https://github.com/Cluas/tornado-rest-swagger/issues
 Python version | python2.7 and Python 3.4 and above
 Swagger Language Specification | https://swagger.io/specification
 
@@ -46,11 +45,62 @@ Installation
 What's tornado-rest-swagger
 ----------------------
 
-tornado-swagger is a plugin for tornado server that allow to document APIs using Swagger show the Swagger-ui console.
+tornado-rest-swagger is a plugin for tornado server that allow to document APIs using Swagger show the Swagger-ui console.
 
 ![](https://github.com/Cluas/tornado-rest-swagger/blob/master/docs/wiki__swagger_single_endpoint.png)
 
 ```python
+
+
+# setup swagger-rest-tornado
+class Application(tornado.web.Application):
+    def __init__(self, **kwargs):
+        setup_swagger(url_patterns,
+                      swagger_url='/docs',
+                      api_base_url='/',
+                      description='',
+                      api_version='1.0.0',
+                      title='LuedongTech API',
+                      contact='huwl@luedongtech.com',
+                      schemes=['https', 'http'],
+                      security_definitions={
+                          'ApiKeyAuth': {
+                              'type': 'apiKey',
+                              'in': 'header',
+                              'name': 'X-API-Key'
+                          }
+                      })
+        tornado.web.Application.__init__(self, url_patterns, **settings)
+ 
+# register swagger scehma
+@register_swagger_model
+class PostModel:
+    """
+    ---
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        post_id:
+          type: integer
+          format: int64
+        body:
+          type: string
+          format: date-time
+        status:
+          type: string
+          description: Order Status
+          enum:
+          - placed
+          - approved
+          - delivered
+        complete:
+          type: boolean
+          default: false
+    """
+
+# example docstring
 class PostsDetailsHandler(tornado.web.RequestHandler):
     def get(self, posts_id):
         """
