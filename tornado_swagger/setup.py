@@ -11,6 +11,7 @@ STATIC_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "swagger_u
 
 def export_swagger(
     routes,
+    api_base_url="/",
     servers=None,
     description="Swagger API definition",
     api_version="1.0.0",
@@ -21,6 +22,7 @@ def export_swagger(
 ):
     return generate_doc_from_endpoints(
         routes,
+        api_base_url=api_base_url,
         servers=servers,
         description=description,
         api_version=api_version,
@@ -33,6 +35,7 @@ def export_swagger(
 
 def setup_swagger(
     routes,
+    api_base_url="/",
     swagger_url="/docs",
     servers=None,
     description="Swagger API definition",
@@ -44,6 +47,7 @@ def setup_swagger(
 ):
     swagger_schema = generate_doc_from_endpoints(
         routes,
+        api_base_url=api_base_url,
         servers=servers,
         description=description,
         api_version=api_version,

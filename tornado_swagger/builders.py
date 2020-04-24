@@ -121,7 +121,7 @@ def nesteddict2yaml(d, indent=10, result=""):
     return result
 
 
-def generate_doc_from_endpoints(routes, servers, description, api_version, title, contact, external_docs, security):
+def generate_doc_from_endpoints(routes, servers, api_base_url, description, api_version, title, contact, external_docs, security):
     from tornado_swagger.components import components
 
     # Clean description
@@ -152,6 +152,7 @@ def generate_doc_from_endpoints(routes, servers, description, api_version, title
     swagger["security"] = security
     swagger["components"] = components.to_dict()
     swagger["servers"] = servers
+    swagger["basePath"] = api_base_url
 
     for route in routes:
         if isinstance(route, tuple):

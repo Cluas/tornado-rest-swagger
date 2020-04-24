@@ -88,6 +88,7 @@ def test_generate_doc_from_each_end_point():
     docs = generate_doc_from_endpoints(
         routes,
         servers=None,
+        api_base_url='/',
         description='',
         api_version='',
         title='',
