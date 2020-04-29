@@ -57,6 +57,10 @@ def extract_swagger_docs(endpoint_doc):
             "description": "Swagger document could not be loaded from docstring",
             "tags": ["Invalid Swagger"],
         }
+        error = str(e)
+        if error.strip():
+            end_point_swagger_doc["tags"] += ["Error details:"]
+            end_point_swagger_doc["tags"].extend(error.splitlines())
     return end_point_swagger_doc
 
 
