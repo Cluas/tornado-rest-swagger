@@ -33,7 +33,7 @@ Documentation |  https://github.com/Cluas/tornado-rest-swagger/wiki
 ------------- | -------------------------------------------------
 Code | https://github.com/Cluas/tornado-rest-swagger
 Issues | https://github.com/Cluas/tornado-rest-swagger/issues
-Python version | python2.7 and Python 3.4 and above
+Python version | python2.7 and Python 3.5 and above
 Swagger Language Specification | https://swagger.io/specification
 
 Installation
