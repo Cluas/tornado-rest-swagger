@@ -29,7 +29,7 @@ class Components(object):
             requestBodies=self.request_bodies,
             responses=self.responses,
             headers=self.headers,
-            exmaples=self.examples,
+            examples=self.examples,
             links=self.links,
             callbacks=self.callbacks,
         )
