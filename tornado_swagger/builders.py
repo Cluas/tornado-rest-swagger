@@ -52,9 +52,9 @@ def extract_swagger_docs(endpoint_doc):
         end_point_swagger_doc = yaml.safe_load(endpoint_doc)
         if not isinstance(end_point_swagger_doc, dict):
             raise yaml.YAMLError()
-    except yaml.YAMLError:
+    except yaml.YAMLError as e:
         end_point_swagger_doc = {
-            "description": "Swagger document could not be loaded from docstring",
+            "description": "Swagger document could not be loaded from docstring, error details : %s" % e,
             "tags": ["Invalid Swagger"],
         }
     return end_point_swagger_doc
