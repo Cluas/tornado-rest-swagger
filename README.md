@@ -305,17 +305,6 @@ if __name__ == "__main__":
 
 ```
 
-### Version 1.1.3
-
-- Fully support OpenAPI3.0
-
-### Version 1.1.2
-
-- Support OpenAPI 3.0 Authentication
-
-### Version 1.1.1
-
-- First version released
 
 
 ## License
