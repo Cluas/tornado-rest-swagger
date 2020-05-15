@@ -7,6 +7,8 @@ class RegisterDict(dict):
 
         if doc is not None and "---" in doc:
             self[item.__name__] = extract_swagger_docs(doc)
+        
+        return item
 
 
 class Components(object):
